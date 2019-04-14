@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tutorial/model/ItemsModel.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -6,9 +8,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class MainScreenState extends State {
-  final _items = <String>[];
-  final _saved = <String>[];
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -17,29 +16,31 @@ class MainScreenState extends State {
   }
 
   Widget _buildList() {
-    return ListView.builder(
-        itemCount: _items.length,
-        itemBuilder: (context, i) {
-          return _buildListItem(i);
-        });
+    return ScopedModelDescendant<ItemsModel>(
+      builder: (context, child, item) {
+        return ListView.builder(
+            itemCount: item.length(),
+            itemBuilder: (context, i) {
+              return _buildListItem(item.get(i));
+            });
+      },
+    );
   }
 
-  Widget _buildListItem(int index) {
-    final bool isSaved = _saved.contains(_items[index]);
-
+  Widget _buildListItem(Item item) {
     return ListTile(
-      key: Key(_items[index]),
+      key: Key(item.title),
       contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
       title: Text(
-        _items[index],
+        item.title,
         style: TextStyle(
-            color: isSaved
+            color: item.isFavourite
                 ? Colors.red
                 : Theme.of(context).textTheme.subhead.color,
-            fontWeight: isSaved ? FontWeight.bold : FontWeight.normal),
+            fontWeight: item.isFavourite ? FontWeight.bold : FontWeight.normal),
       ),
       onTap: () {
-        _onListItemClick(index);
+        _onListItemClick(item);
       },
     );
   }
@@ -62,20 +63,18 @@ class MainScreenState extends State {
     );
   }
 
-  void _onListItemClick(int index) {
-    final bool isSaved = _saved.contains(_items[index]);
-    setState(() {
-      if (isSaved) {
-        _saved.remove(_items[index]);
-      } else {
-        _saved.add(_items[index]);
-      }
-    });
+  void _onListItemClick(Item item) {
+    final itemsModel = ScopedModel.of<ItemsModel>(context);
+
+    if (item.isFavourite) {
+      itemsModel.removeFromFavourites(item.title);
+    } else {
+      itemsModel.addToFavourites(item.title);
+    }
   }
 
   void _onButtonClick() {
-    setState(() {
-      _items.add("Item${_items.length}");
-    });
+    final itemsModel = ScopedModel.of<ItemsModel>(context);
+    itemsModel.add("Item${itemsModel.length()}");
   }
 }

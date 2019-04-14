@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tutorial/model/ItemsModel.dart';
 import 'package:flutter_tutorial/screens/MainScreen.dart';
 import 'package:flutter_tutorial/screens/RandomWordsScreen.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 void main() => runApp(MyApp());
 
@@ -15,7 +17,8 @@ class MyApp extends StatelessWidget {
           child: Scaffold(
             appBar: AppBar(title: Text("Flutter tutorial")),
             bottomNavigationBar: _buildTabs(context),
-            body: TabBarView(children: [MainScreen(), RandomWords()]),
+            body: TabBarView(
+                children: [_buildMainScreen(), _buildRandomWordsScreen()]),
           )),
     );
   }
@@ -28,5 +31,14 @@ class MyApp extends StatelessWidget {
         Tab(text: "Random Words", icon: Icon(Icons.favorite))
       ]),
     );
+  }
+
+  Widget _buildMainScreen() {
+    final items = ItemsModel();
+    return ScopedModel(model: items, child: MainScreen());
+  }
+
+  Widget _buildRandomWordsScreen() {
+    return RandomWords();
   }
 }
