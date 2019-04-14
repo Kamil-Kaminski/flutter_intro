@@ -28,11 +28,14 @@ class MainScreenState extends State {
     final bool isSaved = _saved.contains(_items[index]);
 
     return ListTile(
+      key: Key(_items[index]),
       contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
       title: Text(
         _items[index],
         style: TextStyle(
-            color: isSaved ? Colors.red : Colors.black87,
+            color: isSaved
+                ? Colors.red
+                : Theme.of(context).textTheme.subhead.color,
             fontWeight: isSaved ? FontWeight.bold : FontWeight.normal),
       ),
       onTap: () {
