@@ -19,6 +19,7 @@ class MainScreenState extends State {
     return ScopedModelDescendant<ItemsModel>(
       builder: (context, child, item) {
         return ListView.builder(
+            key: PageStorageKey<String>("MainScreen"),
             itemCount: item.length(),
             itemBuilder: (context, i) {
               return _buildListItem(item.get(i));
