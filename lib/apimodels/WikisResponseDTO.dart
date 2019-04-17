@@ -1,10 +1,11 @@
+import 'package:flutter_tutorial/apimodels/ItemDTO.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'WikisResponseDTO.g.dart';
 
 @JsonSerializable()
 class WikisResponseDTO {
-  List<String> items;
+  List<ItemDTO> items;
 
   WikisResponseDTO(this.items);
 
