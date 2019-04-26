@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_tutorial/apimodels/ItemDTO.dart';
 import 'package:flutter_tutorial/apimodels/WikisResponseDTO.dart';
 import 'package:http/http.dart';
 
@@ -29,7 +30,7 @@ class WikiDetailsScreenState extends State {
 
   Widget _getContent(snapshot) {
     if (snapshot.hasData) {
-      return Text("size: ${snapshot.data.items.length}");
+      return _getList(snapshot.data.items);
     } else if (snapshot.hasError) {
       return Text("error: ${snapshot.error}");
     } else {
@@ -41,6 +42,23 @@ class WikiDetailsScreenState extends State {
         ),
       );
     }
+  }
+
+  Widget _getList(List<ItemDTO> response) {
+    return ListView.builder(
+        key: PageStorageKey<String>("WikisTitles"),
+        itemCount: response.length,
+        itemBuilder: (context, i) {
+          return _getItem(response[i]);
+        });
+  }
+
+  Widget _getItem(ItemDTO item) {
+    return ListTile(
+      key: Key(item.id.toString()),
+      contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+      title: Text(item.name),
+    );
   }
 
   Future<WikisResponseDTO> _getWikis() async {
